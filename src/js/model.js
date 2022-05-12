@@ -103,19 +103,28 @@ init();
 
 export const uploadRecipe = async function (newRecipe) {
     try {
-        console.log(newRecipe);
-        const ingredients = Object.entries(newRecipe).filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
-            .map(ing => {
-                const ingArr = ing[1]
-                    .split(',').map(el => el.trim());
 
-                if (ingArr.length !== 3)
-                    throw new Error('Wrong ingredient format!');
+        let ingredients = Object.entries(newRecipe).filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '').reduce((rv, obj) => {
+            const ogkey = obj[0];
+            const keyfr = ogkey.split('_');
+            const key = keyfr[0];
+            const el = keyfr[1];
+            rv[key] = rv[key] || [];
+            rv[key][el] = obj[1];
+            return rv;
+        }, {});
+        ingredients = Object.entries(ingredients)
+            .map(([key, value]) => {
 
-                const [quantity, unit, description] = ingArr;
+                console.log("VALue type", typeof value);
+
+                const { quantity, unit, description } = value;
 
                 return { quantity: quantity ? +quantity : null, unit, description };
+
             });
+
+
 
         const recipe = {
             title: newRecipe.title,
