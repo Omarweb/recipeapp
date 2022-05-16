@@ -109,10 +109,13 @@ export const uploadRecipe = async function (newRecipe) {
             const keyfr = ogkey.split('_');
             const key = keyfr[0];
             const el = keyfr[1];
+
             rv[key] = rv[key] || [];
             rv[key][el] = obj[1];
             return rv;
-        }, {});
+        }, []);
+
+      
         ingredients = Object.entries(ingredients)
             .map(([key, value]) => {
 
